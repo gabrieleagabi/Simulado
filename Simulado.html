@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Simulado Interativo — Módulo I</title>
+  <meta name="description" content="Simulado interativo com perguntas, verificação e explicações.">
+  <style>
+    :root{
+      --bg:#f6f9fc; --card:#ffffff; --accent:#004e8f; --accent-2:#003a64; --ok:#2e7d32; --err:#c62828;
+      --muted:#666; --radius:12px; font-family: "Inter", "Segoe UI", Roboto, Arial, sans-serif;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:linear-gradient(180deg,#fbfdff,#f1f6fa);color:#111;padding:28px;}
+    header{display:flex;align-items:center;gap:16px;margin-bottom:18px;max-width:1100px;margin-left:auto;margin-right:auto}
+    h1{margin:0;font-size:1.45rem;color:var(--accent)}
+    .meta{color:var(--muted);font-size:0.95rem}
+    .controls{margin:12px 0 22px;display:flex;gap:10px;flex-wrap:wrap;max-width:1100px;margin-left:auto;margin-right:auto}
+    button{background:var(--accent);color:#fff;border:0;padding:9px 14px;border-radius:10px;cursor:pointer;font-weight:600}
+    button.secondary{background:#eef3f7;color:#001;box-shadow:none}
+    .container{display:grid;grid-template-columns:1fr;gap:14px;max-width:1100px;margin:0 auto 28px auto}
+    .qcard{background:var(--card);padding:14px;border-radius:var(--radius);box-shadow:0 8px 22px rgba(2,12,34,0.06);transition:transform .12s ease}
+    .qcard:hover{transform:translateY(-4px)}
+    .qhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+    .qnum{font-weight:700;color:var(--accent-2);font-size:0.95rem}
+    .qtext{margin:6px 0 12px;font-size:0.98rem}
+    .opts{display:flex;flex-direction:column;gap:8px}
+    label.opt{display:flex;gap:12px;align-items:center;padding:10px;border-radius:10px;border:1px solid transparent;cursor:pointer;transition:all .12s}
+    label.opt:hover{transform:translateY(-2px)}
+    input[type="radio"]{transform:scale(1.05);margin-left:4px}
+    .explain{margin-top:10px;padding:12px;border-radius:10px;display:none;font-size:0.94rem}
+    .explain.ok{background:linear-gradient(90deg,#e8f5e9,#ffffff);border:1px solid rgba(46,125,50,0.12);color:var(--ok)}
+    .explain.err{background:linear-gradient(90deg,#fff0f0,#ffffff);border:1px solid rgba(198,40,40,0.12);color:var(--err)}
+    .small{font-size:0.86rem;color:var(--muted)}
+    footer{margin-top:20px;color:var(--muted);font-size:0.85rem;text-align:center;max-width:1100px;margin-left:auto;margin-right:auto}
+    .actions-right{margin-left:auto;display:flex;gap:8px}
+    @media(min-width:900px){ .container{grid-template-columns:repeat(2,1fr)} }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Simulado Interativo — Módulo I (Desenvolvimento de Sistemas)</h1>
+      <div class="meta">110 perguntas | Selecione uma alternativa e clique em <strong>Verificar</strong>.</div>
+    </div>
+  </header>
+
+  <div class="controls" role="toolbar" aria-label="Controles do simulado">
+    <button id="revealAll" title="Mostrar respostas e explicações de todas as questões">Mostrar todas as respostas</button>
+    <button id="collapseAll" class="secondary" title="Ocultar todas as explicações">Ocultar explicações</button>
+    <button id="downloadJson" class="secondary" title="Baixar banco de questões em JSON">Exportar banco (JSON)</button>
+    <div class="small" style="align-self:center;margin-left:8px">Formato: cards — responsivo — pronto para VS Code.</div>
+  </div>
+
+  <main class="container" id="quizContainer" aria-live="polite"></main>
+
+  <div style="max-width:1100px;margin:12px auto;display:flex;gap:8px;justify-content:flex-end">
+    <button id="revealAllBottom">Mostrar todas as respostas</button>
+  </div>
+
+  <footer>
+    Gerado a partir dos simulados enviados — 110 questões sem repetições, com explicações. Cole o código em <code>simulado_modulo1.html</code> e abra no navegador.
+  </footer>
+
+<script>
+/* ===== Banco de questões: 110 itens (únicos) =====
+   Cada item: {id, question, options: [4], answer: index(0..3), explanation}
+*/
+const questions = [
+{"id":1,"question":"Qual componente da placa-mãe conecta o processador (CPU)?","options":["Slot de expansão","Socket","Banco de memória RAM","Conector IDE"],"answer":1,"explanation":"Socket é o soquete onde o processador é encaixado."},
+{"id":2,"question":"O SSD é considerado evolução de qual dispositivo?","options":["Chipset","Disco Rígido (HD)","CD-ROM","Memória Cache"],"answer":1,"explanation":"SSD é uma memória em estado sólido que substitui os discos magnéticos do HD."},
+{"id":3,"question":"No Linux, o comando 'cd /projetos/' serve para:","options":["Criar diretório","Excluir diretório","Abrir/entrar no diretório","Listar arquivos"],"answer":2,"explanation":"cd é usado para navegar/entrar em diretórios."},
+{"id":4,"question":"Documento que concede poderes a outra pessoa:","options":["Atestado","Procuração","Memorando","Requerimento"],"answer":1,"explanation":"Procuração é o documento que outorga poderes a alguém."},
+{"id":5,"question":"Forma correta de declarar e inicializar matriz em Java:","options":["int[][] mat = new int[2][2];","int[][] mat = {{1,2},{3,4}};","int mat[2][2] = {(1,2),(3,4)};","int[][] mat = new {{1,2},{3,4}};"],"answer":1,"explanation":"A sintaxe literal é int[][] mat = {{...},{...}}; ou usando new int[linhas][colunas]."},
+{"id":6,"question":"Qual estrutura é ideal para percorrer todos os elementos de uma matriz?","options":["switch","do-while","for aninhado","if múltiplo"],"answer":2,"explanation":"Usa-se dois for aninhados (linha e coluna)."},
+{"id":7,"question":"Combinação de três cores equidistantes no círculo cromático é chamada de:","options":["Análoga","Triádica","Complementar","Contrastante"],"answer":1,"explanation":"Três cores equidistantes definem a harmonia triádica."},
+{"id":8,"question":"Sistema de cor usado para impressão gráfica:","options":["RGB","HSL","HSV","CMYK"],"answer":3,"explanation":"CMYK é o padrão para impressão (ciano, magenta, amarelo, preto)."},
+{"id":9,"question":"Ao editar uma foto subexposta, normalmente ajusta-se:","options":["Matiz","Brilho/Exposição","Filtro abstrato","Remoção de objetos"],"answer":1,"explanation":"Subexposta = falta de luz → aumentam-se brilho/exposição/contraste."},
+{"id":10,"question":"Frase correta pela Norma Padrão: 'A fim de estudar' ou 'Afim de estudar' ?","options":["'Afim de estudar'","'A fim de estudar'","'Estamos afim de você'","Ambas corretas"],"answer":1,"explanation":"'A fim de' (separado) indica finalidade; 'afim' (junto) indica afinidade."},
+{"id":11,"question":"O método JOptionPane.showInputDialog() em Java retorna qual tipo?","options":["int","double","String","char"],"answer":2,"explanation":"showInputDialog retorna String."},
+{"id":12,"question":"Em Java, para concatenar texto com variável ao imprimir usamos:","options":["System.print('Total' total);","System.out.println('Total: ' + total);","Console.log(total);","print('Total', total);"],"answer":1,"explanation":"Usa-se System.out.println(\"Texto \" + variavel)."},
+{"id":13,"question":"Ferramenta do Photoshop usada para clonar pixels/duplicar partes de imagem:","options":["Borracha","Conta-gotas","Carimbo (Clone Stamp)","Recorte"],"answer":2,"explanation":"Carimbo (Clone Stamp) clona pixels de uma área para outra."},
+{"id":14,"question":"Conjunto de cores, tipografia e logotipo forma:","options":["Campanha","Publicidade","Identidade visual","Personificação"],"answer":2,"explanation":"Identidade visual reúne elementos que representam a marca."},
+{"id":15,"question":"Documento oficial usado entre órgãos/empresas para comunicar compra:","options":["Procuração","Ofício","Memorando","Bilhete"],"answer":1,"explanation":"Ofício é o documento formal de comunicação interinstitucional."},
+{"id":16,"question":"Para organizar elementos na horizontal com Flexbox usamos:","options":["display:flex; flex-direction:row;","display:block;","float:left;","display:flexbox;"],"answer":0,"explanation":"display:flex; flex-direction:row alinha itens no eixo horizontal."},
+{"id":17,"question":"Classe W3.CSS que divide em três colunas iguais (33% cada):","options":["w3-third","w3-half","w3-quarter","w3-full"],"answer":0,"explanation":"w3-third cria colunas de 1/3 cada."},
+{"id":18,"question":"Entidade fraca (no DER) é caracterizada por:","options":["Existir isoladamente","Depender de outra entidade","Ser sempre chave primária","Ter valor fixo"],"answer":1,"explanation":"Entidade fraca depende da existência de outra (pai)."},
+{"id":19,"question":"Para alcançar 2ª forma normal deve-se:","options":["Remover atributos compostos","Eliminar dependência funcional parcial","Remover chaves primárias","Criar índices"],"answer":1,"explanation":"2FN elimina dependências parciais de chave composta."},
+{"id":20,"question":"O valor '2em' em CSS equivale a:","options":["2px","O dobro do tamanho da fonte base","Altura da linha","Metade do padrão"],"answer":1,"explanation":"1em é o tamanho atual da fonte; 2em = duas vezes esse tamanho."},
+{"id":21,"question":"@media only screen and (max-width: 600px) destina-se a:","options":["Telas com largura ≤600px","Impressão","Vídeo","Banco de dados"],"answer":0,"explanation":"Usa-se para aplicar estilos em telas pequenas (largura máxima)."},
+{"id":22,"question":"Código correto para tornar uma imagem clicável (link):","options":["<img href='...'>","<a href='url'><img src='...'></a>","<a><img href='...'></a>","<link img='...'>"],"answer":1,"explanation":"Envolva a img com a tag <a href='...'>."},
+{"id":23,"question":"Operador lógico AND (&&) retorna true quando:","options":["Pelo menos uma condição é true","Ambas as condições são true","Ambas falsas","Sempre true"],"answer":1,"explanation":"&& exige que todas as condições sejam verdadeiras."},
+{"id":24,"question":"Na ABNT, palavras estrangeiras no texto em geral devem estar:","options":["Em negrito","Sublinhadas","Em itálico","Entre parênteses"],"answer":2,"explanation":"Itálico é o destaque recomendado para estrangeirismos."},
+{"id":25,"question":"Formato correto de referência segundo ABNT para artigo:","options":["NOME, Título, Editora, Local, Ano","TÍTULO, Nome","SOBRENOME, Nome. Título. Local: Editora, Ano.","Título. Nome"],"answer":2,"explanation":"ABNT: SOBRENOME, Prenomes. Título. Local: Editora, Ano."},
+{"id":26,"question":"Característica do modelo em espiral:","options":["Linear e sem riscos","Iterativo com análise de riscos","Entrega única final","Sem fases"],"answer":1,"explanation":"Modelo espiral é iterativo e incorpora análises de risco a cada ciclo."},
+{"id":27,"question":"No Scrum, quem remove impedimentos da equipe?","options":["Product Owner","Scrum Master","Desenvolvedor","Gerente"],"answer":1,"explanation":"Scrum Master atua para remover impedimentos e facilitar time."},
+{"id":28,"question":"Um if dentro de outro if em Java é chamado de:","options":["Erro de sintaxe","Estrutura aninhada","Loop","Exceção"],"answer":1,"explanation":"Condição aninhada é permitida e comum para lógica composta."},
+{"id":29,"question":"Em JavaScript, prompt() serve para:","options":["Imprimir no console","Capturar input do usuário","Criar função","Enviar requisição"],"answer":1,"explanation":"prompt mostra uma caixa para o usuário digitar texto."},
+{"id":30,"question":"Sinônimo adequado para 'departamento' em contextos organizacionais:","options":["Sessão","Cessão","Seção","Cesão"],"answer":2,"explanation":"'Seção' é sinônimo de divisão/setor (departamento)."},
+{"id":31,"question":"Qual conector da placa-mãe liga módulos de memória RAM?","options":["Slot PCI","Socket","Bancos (slots) de memória RAM","Conector IDE"],"answer":2,"explanation":"Os slots/bancos de memória conectam os módulos RAM."},
+{"id":32,"question":"Vantagem prática de SSD sobre HD:","options":["Mais ruído","Maior velocidade de acesso","Partes móveis","Maior peso"],"answer":1,"explanation":"SSDs são mais rápidos e não têm partes móveis."},
+{"id":33,"question":"Comando Linux para listar o conteúdo de um diretório:","options":["rm -r","mkdir","ls","cd"],"answer":2,"explanation":"ls lista arquivos e pastas no diretório atual."},
+{"id":34,"question":"Em uma procuração, 'outorgante' é:","options":["Quem recebe poderes","Quem concede poderes","O cartório","O advogado"],"answer":1,"explanation":"Outorgante é quem concede poderes (quem autoriza)."},
+{"id":35,"question":"Como declarar matriz 5x3 em Java (sem inicializar valores)?","options":["int[][] mat = new int[5][3];","int mat[5,3];","int[5][3] mat;","array mat = [5][3];"],"answer":0,"explanation":"new int[5][3] cria matriz de 5 linhas e 3 colunas."},
+{"id":36,"question":"Como imprimir posições e valores de uma matriz em Java corretamente?","options":["for(linha=0;linha<5;linha++) for(col=0;col<3;col++) System.out.println(...);","for(linha++) for(col++) ...","for(double linha...)","for(linha<5;linha++) ..."],"answer":0,"explanation":"Devem ser usados índices com limites e incremento correto."},
+{"id":37,"question":"Harmonia 'análoga' significa cores:","options":["Opções opostas no círculo","Próximas/vizinhas no círculo","Equidistantes","Aleatórias"],"answer":1,"explanation":"Análoga = cores vizinhas (semelhantes) no círculo cromático."},
+{"id":38,"question":"Quando uma cor RGB está fora do 'gamut', isso afeta:","options":["Impressão (CMYK)","Uso em monitores","Formatação de texto","Estrutura de diretórios"],"answer":0,"explanation":"Algumas cores RGB não são reproduzíveis em CMYK (impressão)."},
+{"id":39,"question":"Foto superexposta apresenta:","options":["Falta de luz","Excesso de luz","Saturação baixa","Contraste perfeito"],"answer":1,"explanation":"Superexposta = muito clara; subexposta = muito escura."},
+{"id":40,"question":"Correção básica para imagem muito clara (superexposta):","options":["Aumentar exposição","Diminuir brilho/contraste","Ajustar saturação isoladamente","Remover camada alfa"],"answer":1,"explanation":"Reduzir brilho/controle de exposição/contraste para corrigir superexposição."},
+{"id":41,"question":"No CSS, propriedade para dobrar tamanho da fonte em relação à base:","options":["font-size:2px;","font-size:2em;","font-size:200%;","font-size:2rem;"],"answer":1,"explanation":"2em = duas vezes o tamanho da fonte do elemento pai/valor base."},
+{"id":42,"question":"Sintaxe correta para cor RGB no CSS:","options":["color: rgb(6, 135, 209);","color: rgb= '6,135,209';","color: #6,135,209;","color: rgb(6;135;209);"],"answer":0,"explanation":"rgb(r, g, b) é a sintaxe correta."},
+{"id":43,"question":"A propriedade display:flex cria um container que:","options":["Organiza elementos no eixo principal/inline","Aplica estilos apenas a imagens","Substitui HTML","Não influencia layout"],"answer":0,"explanation":"display:flex permite controlar alinhamento e direção dos filhos."},
+{"id":44,"question":"Classe CSS '#padrao1' se refere a:","options":["ID padrao1","Classe padrao1","Elemento padrao1","Import"],"answer":0,"explanation":"No CSS, #nome refere-se a um ID; .nome refere-se a classe."},
+{"id":45,"question":"@media only screen and (max-width:600px){#main{margin-left:0}} afeta:","options":["Largura de tela ≤600px","Altura ≤600px","Telas grandes","Impressão"],"answer":0,"explanation":"max-width refere-se à largura da viewport."},
+{"id":46,"question":"Ao colocar <a href='https://www.wps.com'><img src='logo.jpg'></a> o que acontece?","options":["A imagem vira link clicável","Nada","Erro de sintaxe","Imagem é removida"],"answer":0,"explanation":"Envolvendo a imagem com <a> ela fica clicável redirecionando ao href."},
+{"id":47,"question":"Tabela-verdade do operador lógico E (AND) para entradas (T,T),(T,F),(F,T),(F,F):","options":["F, F, F, T","T, F, F, F","T, T, T, F","F, T, T, F"],"answer":1,"explanation":"AND resulta true apenas quando ambas as entradas são true: (T,T)=T; os demais=F."},
+{"id":48,"question":"Em modelagem, diagrama ER mostra:","options":["Fluxo de caixa","Entidades, atributos e relacionamentos","Código-fonte","Páginas HTML"],"answer":1,"explanation":"DER representa graficamente entidades e seus relacionamentos."},
+{"id":49,"question":"No DER, 'exemplar' ligado a 'obra' como dependente é exemplo de:","options":["Entidade fraca","Atributo simples","Chave primária composta","Domínio"],"answer":0,"explanation":"Exemplar que depende da obra pode ser tratado como entidade fraca."},
+{"id":50,"question":"Para normalizar tabela Empréstimo devemos ter campos:","options":["cod_emprestimo, cod_obra, cod_usuario, dt_emprestimo, dt_retorno, cod_func","cod_emprestimo, nome_obra, nome_usuario, ...","cod_emprestimo apenas","nome_emprestimo, data"],"answer":0,"explanation":"Normalização recomenda usar códigos/referências em vez de repetir nomes."},
+{"id":51,"question":"Qual comando cria pasta no terminal Linux 'mkdir projetos' faz:","options":["Criar diretório","Remover diretório","Copiar diretório","Renomear"],"answer":0,"explanation":"mkdir cria um diretório com o nome especificado."},
+{"id":52,"question":"O conector IDE na placa-mãe serve para:","options":["Conectar discos antigos (IDE)","Placa de vídeo moderna","Memória RAM","Fonte de alimentação"],"answer":0,"explanation":"Conector IDE conecta dispositivos de armazenamento antigos (CD/DVD/HD IDE)."},
+{"id":53,"question":"Socket na placa-mãe é responsável por:","options":["Conectar processador","Armazenar dados","Ligar monitor","Conectar teclado"],"answer":0,"explanation":"Socket é o local físico de encaixe do processador (CPU)."},
+{"id":54,"question":"Quando usar 'System.out.println(msg)' em Java, o que é impresso?","options":["Mensagem + nova linha","Sem nova linha","Somente números","Nada"],"answer":0,"explanation":"println adiciona nova linha após o conteúdo impresso."},
+{"id":55,"question":"Em CSS, formato hexadecimal representa cor:","options":["rgb(6,135,209)","#004e8f","color(6,135,209)","hex(004e8f)"],"answer":1,"explanation":"#004e8f é uma notação hexadecimal comum para cores."},
+{"id":56,"question":"Qual ferramenta ajusta brilho e contraste no Photoshop?","options":["Carimbo","Níveis/Curvas","Pincel de histórico","Texto"],"answer":1,"explanation":"Ferramentas Níveis/Curvas são usadas para ajustar exposição/contraste."},
+{"id":57,"question":"HTML correto para criar link que abre em nova aba:","options":["<a href='url' target='_blank'>Link</a>","<a src='url'>Link</a>","<link href='url'>Link</link>","<a href='url' new>Link</a>"],"answer":0,"explanation":"target='_blank' faz o link abrir em nova aba/janela."},
+{"id":58,"question":"Qual operador em JavaScript representa E lógico:","options":["||","&&","!","&"],"answer":1,"explanation":"&& é o operador lógico AND em JS e Java."},
+{"id":59,"question":"Ao usar 'display:flex' em container, 'flex-direction:row' significa:","options":["Itens em coluna","Itens em linha (horizontal)","Itens invisíveis","Itens centralizados verticalmente"],"answer":1,"explanation":"row organiza os itens no eixo horizontal."},
+{"id":60,"question":"Para duplicar um gato em foto (clonar), qual ferramenta usar:","options":["Carimbo/Clone Stamp","Varinha mágica","Texto","Filtro"],"answer":0,"explanation":"Carimbo clona pixels permitindo duplicar elementos na imagem."},
+{"id":61,"question":"Qual item é parte de identidade visual:","options":["Tipografia","Código-fonte","SGBD","Back-end"],"answer":0,"explanation":"Tipografia e paleta de cores fazem parte da identidade visual."},
+{"id":62,"question":"Para calcular valor do imposto (porcentagem) sobre valorTotal em Java, expressão correta:","options":["valorTotal*porcentagem","valorTotal*porcentagem/100","porcentagem/valorTotal","valorTotal+porcentagem"],"answer":1,"explanation":"Multiplica-se e divide-se por 100 para obter o valor percentual."},
+{"id":63,"question":"No Java, qual classe tem showInputDialog?","options":["java.io","javax.swing","java.util","java.lang"],"answer":1,"explanation":"JOptionPane está em javax.swing para caixas de diálogo."},
+{"id":64,"question":"Em ER, entidade associativa tem por função:","options":["Relacionar entidades e às vezes carregar atributos do relacionamento","Ser atributo único","Substituir chave primária","Armazenar imagens"],"answer":0,"explanation":"Entidade associativa representa relacionamento com atributos próprios."},
+{"id":65,"question":"O que significa 'gamut' em cor/impressão?","options":["Limite de cores que um sistema pode reproduzir","Tamanho da fonte","Formato de arquivo","Taxa de compressão"],"answer":0,"explanation":"Gamut é o conjunto de cores reproduzíveis por um dispositivo ou espaço de cor."},
+{"id":66,"question":"Em ABNT, como destacar termo estrangeiro no corpo do texto?","options":["Itálico","Negrito","Sublinhado","Caixa alta"],"answer":0,"explanation":"Itálico é recomendado para empréstimos linguísticos e palavras estrangeiras."},
+{"id":67,"question":"W3.CSS: classe para 25%/50%/25% é:","options":["w3-quarter, w3-half, w3-quarter","w3-third, w3-third, w3-third","w3-onequarter etc.","w3-twoquarter"],"answer":0,"explanation":"Usa-se w3-quarter e w3-half para dividir 25%/50%/25%."},
+{"id":68,"question":"Qual é a principal diferença entre SSD e HD tradicional?","options":["SSD tem partes móveis","HD é mais rápido","SSD não usa partes móveis","SSD é magnético"],"answer":2,"explanation":"SSD usa memória flash sem partes móveis, sendo mais resistente e rápido."},
+{"id":69,"question":"Qual comando remove diretório recursivamente em Linux:","options":["mkdir -r","rm -r pasta","rmdir /s","delete -r"],"answer":1,"explanation":"rm -r remove diretórios e seus conteúdos recursivamente."},
+{"id":70,"question":"Para declarar string em Java e receber input com showInputDialog use:","options":["double cpf = JOptionPane.showInputDialog(...)","String cpf = JOptionPane.showInputDialog(...)","int cpf = JOptionPane.showInputDialog(...)","boolean cpf = JOptionPane.showInputDialog(...)"],"answer":1,"explanation":"showInputDialog retorna String, então deve-se usar String."},
+{"id":71,"question":"Ao exibir cupom fiscal concatenando variáveis, qual é a forma correta em Java:","options":["System.out.println('Valor: ' + valorTotal);","System.println('Valor: ' , valorTotal);","System.out.print('Valor: ', valorTotal);","System.output.println(valorTotal);"],"answer":0,"explanation":"Concatenação em Java para impressão usa + entre texto e variáveis."},
+{"id":72,"question":"Qual alternativa descreve 'triádica' no círculo cromático?","options":["Cores vizinhas","Duas opostas","Três equidistantes","Uma dominante só"],"answer":2,"explanation":"Triádica = três cores separadas por ângulos iguais no círculo cromático."},
+{"id":73,"question":"Definição de 'briefing' no contexto de comunicação:","options":["Documento com orientações e requisitos do projeto","Imagem final","Código fonte","Contrato de trabalho"],"answer":0,"explanation":"Briefing reúne informações e requisitos para criação/ação."},
+{"id":74,"question":"O que é uma 'marca figurativa'?","options":["Um logotipo composto só por texto","Uma representação gráfica/símbolo","Documento legal","Cor primária"],"answer":1,"explanation":"Marca figurativa é a parte gráfica (símbolo) da marca."},
+{"id":75,"question":"Qual é a função de um 'manual de identidade visual'?","options":["Padronizar aplicações da marca","Criar backups","Gerenciar banco de dados","Fazer deploy"],"answer":0,"explanation":"Manual define regras para uso de logotipo, cores e tipografia."},
+{"id":76,"question":"Em Java, expressão 'valorTotal * porcentagem / 100' calcula:","options":["Porcentagem do valorTotal","ValorTotal + porcentagem","Porcentagem invertida","Taxa fixa"],"answer":0,"explanation":"Multiplica e divide por 100 para obter o valor percentual."},
+{"id":77,"question":"No CSS, qual sintaxe está errada?","options":[".padrao1{ background-color:#00ff00; }",".padrao1{ color: rgb(6,135,209); }","#padrao1{ font-size:2*em; }","#padrao1{ background-color:00ff00; }"],"answer":2,"explanation":"2*em não é unidade válida; deve ser 2em e cores hex sem '#' são inválidas."},
+{"id":78,"question":"Qual comando JavaScript mostra prompt pedindo autorização de cookies?","options":["var resposta = prompt('Autoriza o uso de Cookies?');","<java> prompt(...) </java>","string resposta = prompt(...)","resposta <- prompt(...)"],"answer":0,"explanation":"prompt() é a função correta e a sintaxe JS padrão usa var/let/const."},
+{"id":79,"question":"No HTML, para transformar uma imagem em link, a sintaxe correta é:","options":["<a href='https://www.example.com'><img src='logotipo.jpg' alt='logo'></a>","<a src='...'><img></a>","<img href='...'>","<link img='...'>"],"answer":0,"explanation":"Envolva a imagem com <a href='...'> para criar um link clicável."},
+{"id":80,"question":"Tabela-verdade do operador E (AND): (V,V) -> ?","options":["Verdadeiro","Falso","Nulo","Indeterminado"],"answer":0,"explanation":"AND só é verdadeiro quando ambas entradas são verdadeiras."},
+{"id":81,"question":"Qual alternativa descreve 'entidade associativa' corretamente?","options":["Relaciona entidades e pode ter atributos próprios","É um tipo de atributo","Sempre é chave primária","Nunca tem atributos"],"answer":0,"explanation":"Entidade associativa materializa relacionamentos e pode ter atributos."},
+{"id":82,"question":"Modelo de ciclo de vida com fases em sequência estrita é o:","options":["Espiral","Iterativo","Cascata (Waterfall)","Ágil"],"answer":2,"explanation":"Modelo cascata define subprocessos em sequência linear."},
+{"id":83,"question":"Modelo cujo foco é combinar desenvolvimento e gerenciamento de riscos:","options":["Cascata","Espiral","Ágil Scrum","Modelo linear"],"answer":1,"explanation":"Modelo espiral integra atividades de gerenciamento de risco."},
+{"id":84,"question":"No Scrum, quem define prioridades e representa stakeholders?","options":["Scrum Master","Product Owner","Tester","Gerente de Projetos"],"answer":1,"explanation":"Product Owner prioriza o Backlog e representa interesse do cliente."},
+{"id":85,"question":"O que chama-se 'backlog' no Scrum?","options":["Lista de itens priorizados a desenvolver","Cronograma fixo","Relatório financeiro","Ferramenta de design"],"answer":0,"explanation":"Backlog é a lista priorizada de funcionalidades/requisitos."},
+{"id":86,"question":"Estrutura condicional para saque que verifica saldo e limite deve usar:","options":["if/else aninhados","while","switch","try/catch"],"answer":0,"explanation":"Condições sequenciais e aninhadas (if dentro de if) resolvem a lógica requerida."},
+{"id":87,"question":"Qual comando Java para imprimir com nova linha é:","options":["System.out.println(...)","System.println(...)","Console.log(...)","print(...)"],"answer":0,"explanation":"System.out.println é a forma correta em Java."},
+{"id":88,"question":"Ao desenvolver layout responsivo, que técnica é indicada:","options":["@media queries","Somente tabelas","Imagens fixas","JavaScript apenas"],"answer":0,"explanation":"@media queries permitem estilos específicos para tamanhos de tela."},
+{"id":89,"question":"Em banco de dados, eliminar dependência transitiva envolve atingir qual forma normal?","options":["1FN","2FN","3FN","0FN"],"answer":2,"explanation":"3FN elimina dependências transitivas e redundâncias."},
+{"id":90,"question":"Em CSS W3.CSS, qual classe representa metade (50%) do espaço?","options":["w3-quarter","w3-half","w3-third","w3-twoquarter"],"answer":1,"explanation":"w3-half representa 50% do espaço."},
+{"id":91,"question":"Qual alternativa é correta para declaração de matriz com valores em Java ?","options":["double mat[][] = { {5,10,8}, {7,8,9}, {8,8,9}, {6,8,6}, {8,10,10} };","double mat[][] = { [5,10,8], ... }","string mat[][] = { ... }","double mat[] = {5,10,8,...}"],"answer":0,"explanation":"Sintaxe com chaves aninhadas é a correta para inicializar matrizes."},
+{"id":92,"question":"Qual é a saída correta ao imprimir valores da matriz com indices linha/coluna?","options":["linha [x] coluna [y] = valor","Matriz(x,y) valor","valor apenas","Erro"],"answer":0,"explanation":"Formato 'linha [i] coluna [j] = valor' é uma forma comum e didática."},
+{"id":93,"question":"Qual alternativa define 'gamut' em contexto prático?","options":["Limite de cores imprimíveis por CMYK","Tamanho do arquivo","Velocidade do processador","Tipo de sistema de arquivos"],"answer":0,"explanation":"Gamut refere-se às cores que um dispositivo (impressora/sistema) pode reproduzir."},
+{"id":94,"question":"Ao preparar um manual de regras de design, qual cuidado textual observar?","options":["Usar norma padrão (ortografia e gramática)","Usar muitos estrangeirismos sem destaque","Evitar referências","Ignorar formatação"],"answer":0,"explanation":"Manual deve seguir a norma padrão para não causar impressão negativa ao cliente."},
+{"id":95,"question":"No desenvolvimento front-end, qual framework citado facilita dividir layout em colunas?","options":["W3.CSS","Java","Postgres","Linux"],"answer":0,"explanation":"W3.CSS é um framework CSS citado para facilitar layouts."},
+{"id":96,"question":"Ao escrever um artigo científico, como deve-se formatar palavras estrangeiras segundo ABNT?","options":["Em itálico quando apropriado","Colocar em caixa alta","Negrito","Sublinhado"],"answer":0,"explanation":"Itálico é a formatação indicada para palavras em língua estrangeira."},
+{"id":97,"question":"Ao codificar 'if (saldo < saque) if (saldo+limite >= saque) ... else ...' o que se está usando?","options":["Estrutura aninhada válida","Erro sintático","Loop","Declaração inválida"],"answer":0,"explanation":"É uma estrutura de decisão aninhada comum para verificar limite e saldo."},
+{"id":98,"question":"Qual é a função do 'Product Owner' no Scrum?","options":["Remover impedimentos","Priorizar itens do backlog","Codificar funções","Testar o software"],"answer":1,"explanation":"Product Owner prioriza o backlog e representa as necessidades do cliente."},
+{"id":99,"question":"Para garantir que um site funcione bem em celulares, o que deve ser considerado?","options":["Media queries e layout flexível","Somente imagens grandes","Somente CSS fixo","Usar tabelas para layout"],"answer":0,"explanation":"Responsividade exige media queries e layout flexível (flex/grid)."},
+{"id":100,"question":"O que é 'carimbo' (stamp) no Photoshop?","options":["Ferramenta de clonagem","Filtro artístico","Ferramenta de texto","Conversor de formatos"],"answer":0,"explanation":"Carimbo (Clone Stamp) copia pixels de uma área para outra."},
+{"id":101,"question":"Em JavaScript, qual é a forma correta de declarar variável para resposta do prompt?","options":["var resposta = prompt('...');","string resposta = prompt('...');","int resposta = prompt('...');","resposta <- prompt('...');"],"answer":0,"explanation":"Em JS se usa var/let/const; prompt retorna string."},
+{"id":102,"question":"Para que serve a tag meta viewport em páginas responsivas?","options":["Controlar escala e largura no mobile","Inserir metadados de SEO","Carregar JS","Definir favicon"],"answer":0,"explanation":"Meta viewport permite controle de escala e largura em dispositivos móveis."},
+{"id":103,"question":"Qual elemento deve envolver scripts que manipulam DOM após carregamento?","options":["<head>","<footer>","Ao final do body ou DOMContentLoaded","<title>"],"answer":2,"explanation":"Scripts que acessam elementos do DOM devem rodar após o carregamento (ex.: ao final do body ou ouvindo DOMContentLoaded)."},
+{"id":104,"question":"O que significa 'sem partes móveis' ao se referir a SSDs?","options":["Não tem discos mecânicos girando","Não tem cabo","Não tem sistema operacional","Não tem memória"],"answer":0,"explanation":"SSD usa memória flash e não discos giratórios, diferindo do HD tradicional."},
+{"id":105,"question":"Em Java, qual comando lança exceção se índice estiver fora do intervalo?","options":["IndexOutOfBoundsException","NullPointerException","IOException","ArithmeticException"],"answer":0,"explanation":"IndexOutOfBoundsException (ou ArrayIndexOutOfBoundsException) é lançada ao acessar índice inválido."},
+{"id":106,"question":"Qual dos seguintes é um tipo de teste de software focado em integração de módulos?","options":["Teste unitário","Teste de integração","Teste de regressão","Teste de aceitação"],"answer":1,"explanation":"Teste de integração verifica integração entre módulos ou componentes."},
+{"id":107,"question":"Qual atributo HTML é usado para tornar um campo obrigatório?","options":["required","mandatory","need","validate"],"answer":0,"explanation":"required é o atributo HTML5 que torna um input obrigatório."},
+{"id":108,"question":"Em UX, o termo 'heurística' refere-se a:","options":["Princípios gerais de usabilidade","Códigos-fonte","Banco de dados","Modelo de negócios"],"answer":0,"explanation":"Heurísticas são regras/princípios gerais que orientam avaliações de usabilidade."},
+{"id":109,"question":"No Git, comando para criar um novo branch local é:","options":["git branch nome-do-branch","git new nome-do-branch","git create branch","git init branch"],"answer":0,"explanation":"git branch <nome> cria um ramo local. Para mudar para ele usa-se git checkout <nome> ou git switch <nome>."},
+{"id":110,"question":"Qual é a função do 'Scrum Master' em uma equipe Scrum?","options":["Priorizar backlog","Remover impedimentos e facilitar o time","Aprovar release financeiro","Gerenciar contratos"],"answer":1,"explanation":"Scrum Master atua como facilitador e ajuda a remover impedimentos para o time."}
+];
+
+/* ===== Funções de renderização e eventos ===== */
+const container = document.getElementById('quizContainer');
+
+function escapeHtml(text){
+  if(text === null || text === undefined) return '';
+  return String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function buildCard(q){
+  const card = document.createElement('article');
+  card.className = 'qcard';
+  card.id = 'qcard-' + q.id;
+
+  // Header
+  const head = document.createElement('div'); head.className = 'qhead';
+  const num = document.createElement('div'); num.className = 'qnum'; num.textContent = 'Q' + q.id;
+  const checkBtn = document.createElement('button'); checkBtn.type = 'button'; checkBtn.textContent = 'Verificar';
+  checkBtn.setAttribute('aria-label','Verificar resposta da questão ' + q.id);
+  checkBtn.style.background = '#006494'; checkBtn.style.color = '#fff'; checkBtn.style.padding = '6px 10px'; checkBtn.style.borderRadius = '8px';
+  head.appendChild(num); head.appendChild(checkBtn);
+  card.appendChild(head);
+
+  // Question text
+  const qtext = document.createElement('div'); qtext.className = 'qtext';
+  qtext.innerHTML = '<strong>' + escapeHtml(q.question) + '</strong>';
+  card.appendChild(qtext);
+
+  // Options
+  const opts = document.createElement('div'); opts.className = 'opts';
+  q.options.forEach((opt, i) => {
+    const label = document.createElement('label');
+    label.className = 'opt';
+    label.setAttribute('data-index', i);
+    label.style.userSelect = 'none';
+
+    const radio = document.createElement('input');
+    radio.type = 'radio'; radio.name = 'q' + q.id; radio.value = i;
+    radio.setAttribute('aria-label','Alternativa ' + ['A','B','C','D'][i] + ' da questão ' + q.id);
+
+    const span = document.createElement('span');
+    span.innerHTML = '<strong>' + ['A)','B)','C)','D)'][i] + '</strong> ' + escapeHtml(opt);
+
+    label.appendChild(radio); label.appendChild(span);
+    opts.appendChild(label);
+  });
+  card.appendChild(opts);
+
+  // Explanation area
+  const explain = document.createElement('div'); explain.className = 'explain'; explain.id = 'explain-' + q.id;
+  explain.innerHTML = '<div class="small">Resposta correta: <strong>' + ['A','B','C','D'][q.answer] + '</strong></div><div style="margin-top:8px">' + escapeHtml(q.explanation) + '</div>';
+  card.appendChild(explain);
+
+  // Button event
+  checkBtn.addEventListener('click', () => {
+    const selected = card.querySelector('input[type="radio"]:checked');
+    if(!selected){
+      alert('Selecione uma alternativa antes de verificar (Q' + q.id + ').');
+      return;
+    }
+    const selIdx = Number(selected.value);
+    const isOk = selIdx === q.answer;
+    explain.style.display = 'block';
+    explain.className = 'explain ' + (isOk ? 'ok' : 'err');
+
+    // highlight
+    const labels = Array.from(card.querySelectorAll('.opt'));
+    labels.forEach((lbl, idx) => {
+      lbl.style.borderColor = (idx === q.answer) ? 'rgba(0,78,143,0.12)' : 'transparent';
+      lbl.style.background = '';
+      if(idx === selIdx){
+        lbl.style.background = isOk ? '#e8f5e9' : '#fff0f0';
+      }
+    });
+  });
+
+  return card;
+}
+
+/* Render all questions */
+(function renderAll(){
+  const frag = document.createDocumentFragment();
+  questions.forEach(q => frag.appendChild(buildCard(q)));
+  container.appendChild(frag);
+})();
+
+/* Reveal / Collapse functions */
+function revealAll(){
+  questions.forEach(q => {
+    const ex = document.getElementById('explain-' + q.id);
+    if(ex){ ex.style.display = 'block'; ex.className = 'explain ok'; }
+    const card = document.getElementById('qcard-' + q.id);
+    if(card){
+      Array.from(card.querySelectorAll('.opt')).forEach((lbl, idx) => {
+        lbl.style.borderColor = (idx === q.answer) ? 'rgba(0,78,143,0.12)' : 'transparent';
+      });
+    }
+  });
+}
+function collapseAll(){
+  questions.forEach(q => {
+    const ex = document.getElementById('explain-' + q.id);
+    if(ex){ ex.style.display = 'none'; ex.className = 'explain'; }
+    const card = document.getElementById('qcard-' + q.id);
+    if(card){
+      Array.from(card.querySelectorAll('.opt')).forEach(lbl => {
+        lbl.style.borderColor = 'transparent';
+        lbl.style.background = '';
+      });
+    }
+  });
+}
+
+/* Events */
+document.getElementById('revealAll').addEventListener('click', revealAll);
+document.getElementById('revealAllBottom').addEventListener('click', revealAll);
+document.getElementById('collapseAll').addEventListener('click', collapseAll);
+
+/* Export JSON */
+document.getElementById('downloadJson').addEventListener('click', function(){
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(questions, null, 2));
+  const a = document.createElement('a');
+  a.href = dataStr;
+  a.download = 'simulado_modulo1_banco_questoes.json';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+});
+
+/* Accessibility: Enter triggers button when focused */
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Enter' && document.activeElement && document.activeElement.tagName === 'BUTTON'){
+    document.activeElement.click();
+  }
+});
+</script>
+</body>
+</html>
